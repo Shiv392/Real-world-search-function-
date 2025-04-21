@@ -4,7 +4,7 @@
   "description": "server side programing to search data between more then lakh data along with pagination and limit",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js"
   },
   "author": "shiv soni",
   "license": "ISC",
@@ -12,6 +12,7 @@
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "nodemon": "^3.1.9"
   }
 }
