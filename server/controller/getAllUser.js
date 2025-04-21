@@ -1,8 +1,8 @@
 const getUserModel = require('../models/GetData.js');
 
-const GetAllUser=(req,res)=>{
+const GetAllUser=async (req,res)=>{
  try{
- const data=getUserModel.GetDataModel();
+ const data=await getUserModel.GetDataModel();
  if(!data) return res.status(200).json({success:true,message:'No User found'});
  else{
     res.status(200).json({
