@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getUsers } from '../services/UserAPI';
 
 const useFetchUser=({limit,offset})=>{
@@ -6,18 +6,12 @@ const useFetchUser=({limit,offset})=>{
   const [users,setUsers]=useState([]);
   const [error,setError]=useState(null);
 
-  useEffect(()=>{
-    console.log('shivsoni')
-  fetchUser();
-  },[limit,offset]);
-
-  const fetchUser=async()=>{
+  const fetchUser=useCallback(async()=>{
     setLoading(true);
     try{
-        console.log('raipur')
         const data = await getUsers({limit,offset});
         console.log('data-------->',data)
-        setUsers(data);
+        setUsers(data.user);
         setError(null);
     }
     catch(err){
@@ -27,9 +21,14 @@ const useFetchUser=({limit,offset})=>{
     finally{
         setLoading(false);
     }
-  }
+},[limit,offset])
+
+  useEffect(()=>{
+    console.log('shivsoni')
+  fetchUser();
+  },[fetchUser]);
 
   return {loading,users,error};
-}
 
+}
 export default useFetchUser;
