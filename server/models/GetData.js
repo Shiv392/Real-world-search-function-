@@ -8,11 +8,26 @@ exports.getAllUser=({limit,offset})=>{
             reject(err);
         }
         else{
-            console.log('data---------->',data);
             resolve(data);
         }
     })
    }) 
+}
+
+//function to get the count of all record present in the table----------------------->
+exports.getUsersCount=()=>{
+  return new Promise((resolve,reject)=>{
+    dbConnection.query(`select count(id) as TotalCount from userdata`,(err,data)=>{
+      if(err){
+        console.log('error while fetch total user count--------->',err);
+        reject(err);
+      }
+      else{
+        console.log('total user count------>',data);
+        resolve(data[0].TotalCount);
+      }
+    })
+  })
 }
 
 exports.getSearchUser=({keyword,limit,offset})=>{
