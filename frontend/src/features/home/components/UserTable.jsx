@@ -6,17 +6,17 @@ import '../../home/Home.css';
 
 const UserTable=()=>{
 
-    const {loading,users,error} = useFetchUser({limit:50,offset:10});
+    const {loading,users,totalUserCnt,error} = useFetchUser({limit:50,offset:10});
     console.log('api data------->',users);
 
-    if(loading) return <h3>Loading....</h3>
+    if(loading) return <h3 style={{'textAlign':'center'}}>Loading....</h3>
 
 return(
     <div>
         <h1>User Table Data</h1>
         {
             users.length==0 ? <h3>No Data</h3> : 
-            <div style={{'display':'flex','justifyContent':'center','alignContent':'center',marginTop:'30px' }}>
+            <div style={{'display':'flex','flexDirection':'column','justifyContent':'center','alignItems':'center',marginTop:'30px' }}>
             <div style={{ height: '600px', overflow: 'scroll','width':'80%'}}>
             <table className="table">
         <thead>
@@ -43,9 +43,14 @@ return(
         </tbody>
           </table>
             </div>
+
+            <div>
+             Total User : {totalUserCnt}
+            </div>
             </div>
         }
     </div>
 )
 }
 export default UserTable;
+
