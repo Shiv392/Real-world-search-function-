@@ -1,6 +1,7 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import useFetchUser from '../hooks/useFetchUser';
 import '../../home/Home.css';
+import { limitValues } from '../services/constants';
 
 
 
@@ -22,14 +23,17 @@ const UserTable = () => {
         users.length == 0 ? <h3>No Data</h3> :
           <div style={{ 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'center', 'alignItems': 'center', marginTop: '30px' }}>
             <div style={{ marginBottom: '10px', textAlign: 'center' }}>
+
               <label htmlFor="limitSelect">Records per page: </label>
               <select id="limitSelect" value={limit} onChange={handleLimitChange}>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-                <option value={150}>150</option>
-                <option value={200}>200</option>
+                {limitValues.map(({ label, value }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
               </select>
             </div>
+            
             <div style={{ height: '600px', overflow: 'scroll', 'width': '80%' }}>
               <table className="table">
                 <thead>
