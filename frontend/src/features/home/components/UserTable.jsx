@@ -67,7 +67,7 @@ const visiblePages=useMemo(()=> getVisiblePages(page,pagelist.length),[page,page
       <h1>User Table Data</h1>
       {
         users.length == 0 ? <h3>No Data</h3> :
-          <div style={{ 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'center', 'alignItems': 'center', marginTop: '30px' }}>
+          <div style={{ 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'center', 'alignItems': 'center', marginTop: '2px' }}>
             <div style={{ marginBottom: '10px', textAlign: 'center' }}>
 
               <label htmlFor="limitSelect">Records per page: </label>
