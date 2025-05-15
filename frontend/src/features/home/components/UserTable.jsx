@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import useFetchUser from '../hooks/useFetchUser';
 import '../../home/Home.css';
 import { limitValues } from '../services/constants';
@@ -7,20 +7,24 @@ import { limitValues } from '../services/constants';
 
 const UserTable = () => {
   const [limit, setLimit] = useState(50);
-  const [offset, setoffset] = useState(0);
+  const [offset, setOffset] = useState(0);
   const { loading, users, totalUserCnt, pagelist, error } = useFetchUser({ limit: limit, offset: offset });
   const [page, setPage] = useState(1)
 
   const handleLimitChange = (e) => {
+    setPage(1);
+    setOffset(0);
     const selectedLimit = parseInt(e.target.value);
     setLimit(selectedLimit);
   };
 
   const handlePageChange = (page) => {
     setPage(page);
-    setoffset(limit);
+    setOffset((page - 1) * limit);
   }
 
+  //here getVisiblePages will render and recalculate on every changes 
+  //that's why use usememo to recalculate only when page or pagelist changes--->
  const getVisiblePages = (currentPage, totalPages) => {
   const pages = [];
 
@@ -52,6 +56,9 @@ const UserTable = () => {
 
   return pages;
 };
+
+//store memoized function value in the array
+const visiblePages=useMemo(()=> getVisiblePages(page,pagelist.length),[page,pagelist])
 
   if (loading) return <h3 style={{ 'textAlign': 'center' }}>Loading....</h3>
 
@@ -88,7 +95,7 @@ const UserTable = () => {
                   {
                     users.map((user, index) => (
                       <tr key={index} className={index % 2 === 0 ? 'row-even' : 'row-odd'}>
-                        <td className="table-cell">{index + 1}</td>
+                        <td className="table-cell">{offset + index + 1}</td>
                         <td className="table-cell">{user.id}</td>
                         <td className="table-cell">{user.name}</td>
                         <td className="table-cell">{user.email}</td>
@@ -102,13 +109,14 @@ const UserTable = () => {
 
             <div>
               Total User : {totalUserCnt}
-              {getVisiblePages(page, pagelist.length).map((pg, index) => (
+              {visiblePages.map((pg, index) => (
                 <span key={index}>
                   {pg === '...' ? (
                     <span style={{ margin: '5px' }}>...</span>
                   ) : (
                     <button
                       onClick={() => handlePageChange(pg)}
+                      aria-label={`Go to page ${pg}`}
                       style={{
                         margin: '5px',
                         padding: '6px 12px',
