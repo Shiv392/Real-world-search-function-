@@ -12,13 +12,15 @@ const UserTable = () => {
   const [page, setPage] = useState(1)
 
   const handleLimitChange = (e) => {
+    setPage(1);
+    setoffset(0);
     const selectedLimit = parseInt(e.target.value);
     setLimit(selectedLimit);
   };
 
   const handlePageChange = (page) => {
     setPage(page);
-    setoffset(limit);
+    setoffset((page - 1) * limit);
   }
 
  const getVisiblePages = (currentPage, totalPages) => {
