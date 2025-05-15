@@ -6,7 +6,7 @@ import '../../home/Home.css';
 
 const UserTable=()=>{
 
-    const {loading,users,totalUserCnt,error} = useFetchUser({limit:50,offset:10});
+    const {loading,users,totalUserCnt,error} = useFetchUser({limit:50,offset:0});
     console.log('api data------->',users);
 
     if(loading) return <h3 style={{'textAlign':'center'}}>Loading....</h3>
