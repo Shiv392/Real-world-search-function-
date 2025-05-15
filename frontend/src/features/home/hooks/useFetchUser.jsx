@@ -6,6 +6,7 @@ const useFetchUser=({limit,offset})=>{
   const [users,setUsers]=useState([]);
   const [error,setError]=useState(null);
   const [totalUserCnt,setUserCnt]=useState(0);
+  const [pagelist,setPageList] = useState([]);
 
   const fetchUser=useCallback(async()=>{
     setLoading(true);
@@ -15,6 +16,7 @@ const useFetchUser=({limit,offset})=>{
         setUsers(data.user);
         setError(null);
         setUserCnt(data.totalUser);
+        setPageList([...data.pagelist]);
     }
     catch(err){
         setError(err);
@@ -31,7 +33,7 @@ const useFetchUser=({limit,offset})=>{
   fetchUser();
   },[fetchUser]);
 
-  return {loading,users,totalUserCnt,error};
+  return {loading,users,totalUserCnt,pagelist,error};
 
 }
 export default useFetchUser;

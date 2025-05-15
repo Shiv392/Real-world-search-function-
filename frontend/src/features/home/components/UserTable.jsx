@@ -7,12 +7,51 @@ import { limitValues } from '../services/constants';
 
 const UserTable = () => {
   const [limit, setLimit] = useState(50);
-  const { loading, users, totalUserCnt, error } = useFetchUser({ limit: limit, offset: 0 });
+  const [offset, setoffset] = useState(0);
+  const { loading, users, totalUserCnt, pagelist, error } = useFetchUser({ limit: limit, offset: offset });
+  const [page, setPage] = useState(1)
 
   const handleLimitChange = (e) => {
     const selectedLimit = parseInt(e.target.value);
     setLimit(selectedLimit);
   };
+
+  const handlePageChange = (page) => {
+    setPage(page);
+    setoffset(limit);
+  }
+
+ const getVisiblePages = (currentPage, totalPages) => {
+  const pages = [];
+
+  // Always show first page
+  pages.push(1);
+
+  // Add left ellipsis if needed
+  if (currentPage > 4) {
+    pages.push('...');
+  }
+
+  // Add pages around current page
+  const start = Math.max(2, currentPage - 2);
+  const end = Math.min(totalPages - 1, currentPage + 2);
+
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+
+  // Add right ellipsis if needed
+  if (currentPage < totalPages - 3) {
+    pages.push('...');
+  }
+
+  // Always show last page
+  if (totalPages > 1) {
+    pages.push(totalPages);
+  }
+
+  return pages;
+};
 
   if (loading) return <h3 style={{ 'textAlign': 'center' }}>Loading....</h3>
 
@@ -63,6 +102,29 @@ const UserTable = () => {
 
             <div>
               Total User : {totalUserCnt}
+              {getVisiblePages(page, pagelist.length).map((pg, index) => (
+                <span key={index}>
+                  {pg === '...' ? (
+                    <span style={{ margin: '5px' }}>...</span>
+                  ) : (
+                    <button
+                      onClick={() => handlePageChange(pg)}
+                      style={{
+                        margin: '5px',
+                        padding: '6px 12px',
+                        backgroundColor: pg === page ? 'skyblue' : 'white',
+                        border: '1px solid #ccc',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {pg}
+                    </button>
+                  )}
+                </span>
+              ))}
+            </div>
+            <div style={{ marginTop: '20px' }}>
+
             </div>
           </div>
       }
