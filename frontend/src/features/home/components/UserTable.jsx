@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import useFetchUser from '../hooks/useFetchUser';
 import '../../home/Home.css';
 import { limitValues } from '../services/constants';
@@ -9,7 +9,8 @@ const UserTable = () => {
   const [limit, setLimit] = useState(50);
   const [offset, setOffset] = useState(0);
   const [searchInput, setSearchInput] = useState('');
-  const { loading, users, totalUserCnt, pagelist, error } = useFetchUser({ limit: limit, offset: offset, keyword: searchInput });
+  const [deboundSearchInput,setdeboundSearchInput]=useState('');
+  const { loading, users, totalUserCnt, pagelist, error } = useFetchUser({ limit: limit, offset: offset, keyword: deboundSearchInput });
   const [page, setPage] = useState(1)
 
   const handleLimitChange = (e) => {
@@ -59,11 +60,20 @@ const UserTable = () => {
   };
 
   const handleInputChange = (e) => {
-    setOffset(0);
-    setPage(1);
-    e.preventDefault();
     setSearchInput(e.target.value);
   }
+
+  useEffect(()=>{
+  const handler = setTimeout(() => {
+    setdeboundSearchInput(searchInput);
+    setPage(1);
+    setOffset(0);
+  }, 500); // 500ms debounce
+
+  return () => {
+    clearTimeout(handler); // Cleanup if user types again quickly
+  };
+  },[searchInput])
 
   //store memoized function value in the array
   const visiblePages = useMemo(() => getVisiblePages(page, pagelist.length), [page, pagelist])
