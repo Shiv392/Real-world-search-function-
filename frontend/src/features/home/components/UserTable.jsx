@@ -8,7 +8,8 @@ import { limitValues } from '../services/constants';
 const UserTable = () => {
   const [limit, setLimit] = useState(50);
   const [offset, setOffset] = useState(0);
-  const { loading, users, totalUserCnt, pagelist, error } = useFetchUser({ limit: limit, offset: offset });
+  const [searchInput, setSearchInput] = useState('');
+  const { loading, users, totalUserCnt, pagelist, error } = useFetchUser({ limit: limit, offset: offset, keyword: searchInput });
   const [page, setPage] = useState(1)
 
   const handleLimitChange = (e) => {
@@ -25,61 +26,73 @@ const UserTable = () => {
 
   //here getVisiblePages will render and recalculate on every changes 
   //that's why use usememo to recalculate only when page or pagelist changes--->
- const getVisiblePages = (currentPage, totalPages) => {
-  const pages = [];
+  const getVisiblePages = (currentPage, totalPages) => {
+    const pages = [];
 
-  // Always show first page
-  pages.push(1);
+    // Always show first page
+    pages.push(1);
 
-  // Add left ellipsis if needed
-  if (currentPage > 4) {
-    pages.push('...');
+    // Add left ellipsis if needed
+    if (currentPage > 4) {
+      pages.push('...');
+    }
+
+    // Add pages around current page
+    const start = Math.max(2, currentPage - 2);
+    const end = Math.min(totalPages - 1, currentPage + 2);
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    // Add right ellipsis if needed
+    if (currentPage < totalPages - 3) {
+      pages.push('...');
+    }
+
+    // Always show last page
+    if (totalPages > 1) {
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
+
+  const handleInputChange = (e) => {
+    setOffset(0);
+    setPage(1);
+    e.preventDefault();
+    setSearchInput(e.target.value);
   }
 
-  // Add pages around current page
-  const start = Math.max(2, currentPage - 2);
-  const end = Math.min(totalPages - 1, currentPage + 2);
-
-  for (let i = start; i <= end; i++) {
-    pages.push(i);
-  }
-
-  // Add right ellipsis if needed
-  if (currentPage < totalPages - 3) {
-    pages.push('...');
-  }
-
-  // Always show last page
-  if (totalPages > 1) {
-    pages.push(totalPages);
-  }
-
-  return pages;
-};
-
-//store memoized function value in the array
-const visiblePages=useMemo(()=> getVisiblePages(page,pagelist.length),[page,pagelist])
-
-  if (loading) return <h3 style={{ 'textAlign': 'center' }}>Loading....</h3>
+  //store memoized function value in the array
+  const visiblePages = useMemo(() => getVisiblePages(page, pagelist.length), [page, pagelist])
 
   return (
     <div>
       <h1>User Table Data</h1>
+      <div style={{ marginBottom: '10px', textAlign: 'center',display:'flex','justifyContent':'center','alignItems':'center',gap:'30px' }}>
+
+       <div>
+         <label htmlFor="limitSelect">Records per page: </label>
+        <select id="limitSelect" value={limit} onChange={handleLimitChange}>
+          {limitValues.map(({ label, value }) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
+       </div>
+
+        <div>
+          <input type="text" placeholder='Search By Name/City/Email' value={searchInput} onChange={(e) => handleInputChange(e)} />
+        </div>
+      </div>
       {
+        loading ? <h3>Loding.....</h3> : 
         users.length == 0 ? <h3>No Data</h3> :
           <div style={{ 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'center', 'alignItems': 'center', marginTop: '2px' }}>
-            <div style={{ marginBottom: '10px', textAlign: 'center' }}>
 
-              <label htmlFor="limitSelect">Records per page: </label>
-              <select id="limitSelect" value={limit} onChange={handleLimitChange}>
-                {limitValues.map(({ label, value }) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
             <div style={{ height: '600px', overflow: 'scroll', 'width': '80%' }}>
               <table className="table">
                 <thead>
