@@ -2,9 +2,9 @@ const getUserModel = require('../models/GetData.js');
 
 const GetAllUser = async (req, res) => {
   console.log('req------>', req.query)
-  const { limit, offset } = req.query
+  const { limit, offset,keyword } = req.query
   try {
-    const { users, totalcnt, pagelist } = await getUserModel.getAllUser({ limit: limit, offset: offset })
+    const { users, totalcnt, pagelist } = await getUserModel.getAllUser({ limit: limit, offset: offset,keyword:keyword })
 
     if (!users) {
       return res.status(200).json({ success: true, message: 'NO Data Found', users: [] });
