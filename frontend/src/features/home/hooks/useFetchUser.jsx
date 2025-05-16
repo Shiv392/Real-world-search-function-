@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { getUsers } from '../services/UserAPI';
 
-const useFetchUser=({limit,offset})=>{
+const useFetchUser=({limit,offset,keyword})=>{
   const [loading,setLoading]=useState(false);
   const [users,setUsers]=useState([]);
   const [error,setError]=useState(null);
@@ -11,7 +11,7 @@ const useFetchUser=({limit,offset})=>{
   const fetchUser=useCallback(async()=>{
     setLoading(true);
     try{
-        const data = await getUsers({limit,offset});
+        const data = await getUsers({limit,offset,keyword});
         console.log('data-------->',data)
         setUsers(data.user);
         setError(null);
@@ -26,7 +26,7 @@ const useFetchUser=({limit,offset})=>{
     finally{
         setLoading(false);
     }
-},[limit,offset])
+},[limit,offset,keyword])
 
   useEffect(()=>{
     console.log('shivsoni')
